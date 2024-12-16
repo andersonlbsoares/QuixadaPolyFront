@@ -1,130 +1,130 @@
-import * as React from 'react';
-import {Container, Row, Column, Casa, CenterArea, Board} from './styles';
-import Dice from './Components/Dice';
-
-
-
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { Container, Column, PlayerList, BoardContainer, CenterBox, Tile } from "./styles";
+import Dice from "./Components/Dice";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { tiles } from "./tiles.js";
+console.log(tiles);
 const MainScreen = () => {
-    const properties = {
-        top: [
-            { name: 'INÍCIO', corner: true },
-            { name: 'Lion Square', color: '#8B4513', price: 60000 },
-            { name: 'Cofre', special: true },
-            { name: 'Praça da Estação', color: '#8B4513', price: 60000 },
-            { name: 'Imposto', special: true },
-            { name: 'RU', special: true },
-            { name: 'China Brasil', color: '#87CEEB', price: 100000 },
-            { name: 'Sorte', special: true },
-            { name: 'Mac Lanches', color: '#87CEEB', price: 100000 },
-            { name: 'Q-Pão', color: '#87CEEB', price: 120000 },
-            { name: 'CADEIA', corner: true }
-          ],
-        right: [
-          { name: 'Imperius Fitness', color: '#FF69B4', price: 140000 },
-          { name: 'Auditório', special: true },
-          { name: 'Zaut Fitness', color: '#FF69B4', price: 140000 },
-          { name: 'Complexo One', color: '#FF69B4', price: 160000 },
-          { name: 'Supermercado Pinheiro', color: '#FFA500', price: 180000 },
-          { name: 'Sorte', special: true },
-          { name: 'Supermercado Nosso Atacarejo', color: '#FFA500', price: 200000 },
-          { name: 'Cofre', special: true },
-          { name: 'Ginásio Rinaldo Róger', color: '#FF0000', price: 220000 }
-        ],
-        bottom: [
-          { name: 'ESTACIONAMENTO', corner: true },
-          { name: 'Pé na aréia', color: '#FF0000', price: 240000 },
-          { name: 'Sorte', special: true },
-          { name: 'UFC Campus Quixadá', color: '#FFD700', price: 260000 },
-          { name: 'IFCE Quixadá', color: '#FFD700', price: 260000 },
-          { name: 'Biblioteca', special: true },
-          { name: 'UECE Quixadá', color: '#FFD700', price: 280000 },
-          { name: 'Cofre', special: true },
-          { name: 'Igreja Matriz', color: '#008000', price: 300000 },
-          { name: 'Chalé da Pedra', color: '#008000', price: 300000 },
-          { name: 'VÁ PARA CADEIA', corner: true }
-        ],
-        left: [
-          { name: 'Mercado Central', color: '#008000', price: 320000 },
-          { name: 'Pedra do Cruzeiro', color: '#00008B', price: 350000 },
-          { name: 'Sala do CA', special: true },
-          { name: 'Pedra da Galinha Choca', color: '#00008B', price: 350000 },
-          { name: 'Sorte', special: true },
-          { name: 'Imposto', special: true },
-          { name: 'Rainha do Sertão', color: '#00008B', price: 400000 },
-          { name: 'Cofre', special: true },
-          { name: 'LUXO', special: true }
-        ]
-      };
-    
-      return (
-        <Container>
-            <Column width="25%">Participantes</Column>
+    const navigate = useNavigate();
+    const urlBack = process.env.REACT_APP_BACK_URL;
 
-            <Column width="50%">
-                <Board>
-                    <Row height="16.66%">
-                    {properties.top.map((prop, i) => (
-                        <Casa 
-                        key={`top-${i}`}
-                        corner={prop.corner}
-                        color={prop.color}
-                        style={{flex: prop.corner ? 1.5 : 1}}
-                        >
-                        {prop.name}
-                        {prop.price && <div style={{fontSize: '0.6rem'}}>R$ {prop.price.toLocaleString()}</div>}
-                        </Casa>
-                    ))}
-                    </Row>
-                    <Row height="66.66%">
-                    <Column width="16.66%">
-                        {properties.left.map((prop, i) => (
-                        <Casa 
-                            key={`left-${i}`}
-                            color={prop.color}
-                        >
-                            {prop.name}
-                            {prop.price && <div style={{fontSize: '0.6rem'}}>R$ {prop.price.toLocaleString()}</div>}
-                        </Casa>
-                        ))}
-                    </Column>
-                    <CenterArea>
-                        QuixadáPoly
-                    </CenterArea>
-                    <Column width="16.66%">
-                        {properties.right.map((prop, i) => (
-                        <Casa 
-                            key={`right-${i}`}
-                            color={prop.color}
-                        >
-                            {prop.name}
-                            {prop.price && <div style={{fontSize: '0.6rem'}}>R$ {prop.price.toLocaleString()}</div>}
-                        </Casa>
-                        ))}
-                    </Column>
-                    </Row>
-                    <Row height="16.66%">
-                    {properties.bottom.map((prop, i) => (
-                        <Casa 
-                        key={`bottom-${i}`}
-                        corner={prop.corner}
-                        color={prop.color}
-                        style={{flex: prop.corner ? 1.5 : 1}}
-                        >
-                        {prop.name}
-                        {prop.price && <div style={{fontSize: '0.6rem'}}>R$ {prop.price.toLocaleString()}</div>}
-                        </Casa>
-                    ))}
-                    </Row>
-                </Board>
-            </Column>
-          
-            <Column width="25%">
-                <Dice />
-            </Column>
+    // Place squares on the board perimeter
 
+    const [players, setPlayers] = useState([]);
 
-        </Container>
-      );
+    let namePlyer = sessionStorage.getItem("namePlyer");
+    let sessionId = sessionStorage.getItem("sessionId");
+
+    useEffect(() => {
+        if (!namePlyer || !sessionId) {
+            navigate("/");
+        }
+    }, [namePlyer, sessionId, navigate]);
+
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            try {
+                const response = await axios.get(`${urlBack}/sessao/${sessionId}`);
+                setPlayers(response.data.players);
+                console.log(players);
+            } catch (error) {
+                console.error("Erro ao buscar participantes:", error);
+            }
+        };
+
+        fetchPlayers();
+        const intervalId = setInterval(fetchPlayers, 3000);
+
+        return () => clearInterval(intervalId);
+    }, [sessionId]);
+
+    const TileMap = () => {
+        return tiles.map((tile) => {
+            let position =
+                tile.row == 11
+                    ? "bottom"
+                    : tile.col == 1
+                    ? "left"
+                    : tile.col == 11
+                    ? "right"
+                    : tile.row == 1
+                    ? "top"
+                    : undefined;
+            return (
+                <Tile
+                    key={tile.name}
+                    style={{
+                        gridColumn: tile.col,
+                        gridRow: tile.row,
+                    }}
+                    bgColor={tile.bgColor}
+                    ownerColor={tile.owner_color}
+                    position={position}
+                >
+                    <div className="tile-name">{tile.name}</div>
+
+                    {!tile.special && (
+                        <>
+                            <div className="house-container">
+                                {tile.hotel ? (
+                                    <div className="hotel" />
+                                ) : (
+                                    Array.from({ length: tile.houses }).map((_, i) => (
+                                        <div key={i} className="house" />
+                                    ))
+                                )}
+                            </div>
+                            <div className="tile-info">
+                                <span>Aluguel: ${tile.rent}</span>
+                                <br />
+                                <span>Preço: ${tile.price}</span>
+                            </div>
+                        </>
+                    )}
+                </Tile>
+            );
+        });
     };
-    
-    export default MainScreen;
+
+    //     <Tile
+    //     key={tile.name}
+    //     style={{
+    //         gridColumn: tile.col,
+    //         gridRow: tile.row,
+    //     }}
+    //     bgColor={tile.bgColor}
+    // >
+    //     {tile.name}
+    // </Tile>
+    return (
+        <Container>
+            <Column width="25%">
+                <h3>Participantes</h3>
+                <PlayerList>
+                    {players.map((player, index) => (
+                        <li key={index}>
+                            <strong>{player.name}</strong>
+                            <div>Saldo: {player.balance}</div>
+                        </li>
+                    ))}
+                </PlayerList>
+            </Column>
+            <Column width="50%">
+                <BoardContainer>
+                    <TileMap />
+                    <CenterBox>
+                        <div>
+                            <Dice />
+                            <Dice />
+                        </div>
+                    </CenterBox>
+                </BoardContainer>
+            </Column>
+            <Column width="25%"></Column>
+        </Container>
+    );
+};
+
+export default MainScreen;

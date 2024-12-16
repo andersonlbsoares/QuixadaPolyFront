@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import {
     Container,
     Input,
@@ -11,8 +14,9 @@ import {
 } from "./styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AiOutlineDollarCircle } from "react-icons/ai";
 const StartPage = () => {
+    const navigate = useNavigate();
+    const urlBack = process.env.REACT_APP_BACK_URL;
     const [sessionId, setSessionId] = useState("");
     const [name, setName] = useState("");
 
@@ -26,7 +30,24 @@ const StartPage = () => {
 
     const handleJoinGame = () => {
         if (sessionId && name) {
-            //something
+            axios
+                .post(`${urlBack}/sessao/${sessionId}/jogador`, {
+                    name: name,
+                    color: "red",
+                })
+                .then((response) => {
+                    if (response.data.sessionNumber) {
+                        sessionStorage.setItem("sessionId", sessionId);
+                        sessionStorage.setItem("namePlyer", name);
+                        navigate(`/game`);
+                    } else {
+                        toast("Partida não encontrada");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast(error.response.data.message);
+                });
         } else {
             toast("Insira o nome e o ID da partida");
         }
