@@ -142,7 +142,7 @@ export const Background = styled.div`
     overflow: hidden;
 
     /* Inclinação simulada usando skew */
-    transform: skewY(-30deg);
+    transform: rotate(30deg);
     transform-origin: top left; /* Mantém o ponto de rotação no canto superior esquerdo */
     animation: ${slideAnimation} 10s linear infinite;
 `;
