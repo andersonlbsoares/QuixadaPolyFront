@@ -62,7 +62,6 @@ export const Button = styled.button`
     border-radius: 8px;
     cursor: pointer;
     margin: 10px;
-
     &:hover {
         background: linear-gradient(90deg, #5c29d1, #8c4ddd);
     }
@@ -72,19 +71,6 @@ export const Button = styled.button`
 export const ButtonGroup = styled.div`
     display: flex;
     gap: 15px;
-`;
-
-// Ícones decorativos
-export const IconContainer = styled.div`
-    position: absolute;
-    bottom: 0;
-    display: flex;
-    gap: 15px;
-
-    img {
-        width: 50px;
-        opacity: 0.2;
-    }
 `;
 
 export const Row = styled.div`
@@ -100,6 +86,7 @@ export const Column = styled.div`
     width: ${(props) => props.width || "100%"};
     align-items: center;
 `;
+
 export const CustomToastContainer = styled(ToastContainer)`
     .Toastify__toast {
         border-radius: 10px;
@@ -129,40 +116,18 @@ export const CustomToastContainer = styled(ToastContainer)`
     }
 `;
 export const Background = styled.div`
-    width: 100%;
-    height: 100vh;
+    width: 200%;
+    height: 200%;
     background-color: #121212;
     background-image: url("/fundo_branco_borda.png");
     background-repeat: repeat;
-    background-size: 500px;
-    background-position: 0 0;
+    background-size: 300px;
     position: fixed;
     top: 0;
     left: 0;
     overflow: hidden;
-
-    /* Inclinação simulada usando skew */
+    transform-origin: top;
     transform: rotate(30deg);
-    transform-origin: top left; /* Mantém o ponto de rotação no canto superior esquerdo */
-    animation: ${slideAnimation} 10s linear infinite;
+    animation: ${slideAnimation} 10s linear infinite alternate;
+    z-index: -1;
 `;
-
-// export const Background = styled.div`
-//     position: relative;
-//     overflow: hidden;
-//     background-color: #121212;
-//     width: 100vh;
-//     height: 100vh;
-
-//     &::before {
-//         content: "";
-//         position: absolute;
-//         width: 200%;
-//         height: 200%;
-//         top: -50%;
-//         left: -50%;
-//         z-index: -1;
-//         background: url("/fundo_branco_borda.png") 0 0 repeat;
-//         transform: rotate(30deg);
-//     }
-// `;
