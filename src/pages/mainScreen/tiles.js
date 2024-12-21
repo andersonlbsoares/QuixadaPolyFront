@@ -13,7 +13,7 @@ export const tiles = [
         name: "Lion Square",
         color: "#8B4513",
         price: 600,
-        rent: 600,
+        rent: 60,
         row: 11,
         col: 10,
         owner_color: "#FF69B4",
@@ -28,7 +28,7 @@ export const tiles = [
         col: 8,
         owner_color: "#FF69B4",
     },
-    { name: "Imposto", special: true, row: 11, col: 7 },
+    { name: "Imposto 2", special: true, row: 11, col: 7 },
     { name: "RU", special: true, row: 11, col: 6 },
     {
         name: "China Brasil",
@@ -39,7 +39,7 @@ export const tiles = [
         col: 5,
         owner_color: "#FF69B4",
     },
-    { name: "Sorte", special: true, row: 11, col: 4 },
+    { name: "Sorte 1", special: true, row: 11, col: 4 },
     { name: "Mac Lanches", color: "#87CEEB", price: 1000, rent: 100, row: 11, col: 3 },
     {
         name: "Q-Pão",
@@ -91,7 +91,7 @@ export const tiles = [
         col: 1,
         owner_color: "#0069FF",
     },
-    { name: "Sorte", special: true, row: 5, col: 1, owner_color: "#0069FF" },
+    { name: "Sorte 2", special: true, row: 5, col: 1, owner_color: "#0069FF" },
     {
         name: "Supermercado Nosso Atacarejo",
         color: "#FFA50",
@@ -101,7 +101,7 @@ export const tiles = [
         col: 1,
         owner_color: "#0069FF",
     },
-    { name: "Cofre", special: true, row: 3, col: 1 },
+    { name: "Cofre 2", special: true, row: 3, col: 1 },
     {
         name: "Ginásio Rinaldo Róger",
         color: "#FF00",
@@ -125,7 +125,7 @@ export const tiles = [
         col: 2,
         owner_color: "#0F0",
     },
-    { name: "Sorte", special: true, row: 1, col: 3 },
+    { name: "Sorte 3", special: true, row: 1, col: 3 },
     {
         name: "UFC Campus Quixadá",
         color: "#FFD70",
@@ -154,7 +154,7 @@ export const tiles = [
         col: 7,
         owner_color: "#0F0",
     },
-    { name: "Cofre", special: true, row: 1, col: 8 },
+    { name: "Cofre 3", special: true, row: 1, col: 8 },
     {
         name: "Igreja Matriz",
         color: "#0800",
@@ -198,7 +198,7 @@ export const tiles = [
         col: 11,
         owner_color: "#F00",
     },
-    { name: "Sorte", special: true, row: 6, col: 11 },
+    { name: "Sorte 4", special: true, row: 6, col: 11 },
     { name: "Imposto", special: true, row: 7, col: 11 },
     {
         name: "Rainha do Sertão",
@@ -209,6 +209,6 @@ export const tiles = [
         col: 11,
         owner_color: "#F00",
     },
-    { name: "Cofre", special: true, row: 9, col: 11 },
+    { name: "Cofre 4", special: true, row: 9, col: 11 },
     { name: "LUXO", special: true, row: 10, col: 11 },
 ];

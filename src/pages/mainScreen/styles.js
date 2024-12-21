@@ -1,5 +1,24 @@
 import styled from "styled-components";
 
+export const Button = styled.button`
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+
+    &:hover {
+        background-color: #45a049;
+    }
+`;
+
 export const PlayerList = styled.ul`
     list-style: none;
     padding: 0;
@@ -25,6 +44,29 @@ export const PlayerList = styled.ul`
         color: #e0e0e0;
     }
 `;
+
+export const Historico = styled.div`
+    display: flex;
+    flex-direction: column;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 20px;
+    font-size: 14px;
+    max-height: 300px;
+    overflow-y: auto;
+
+    p {
+        margin-bottom: 10px;
+    }
+
+    h3 {
+        margin-bottom: 10px;
+        font-size: 16px;
+        align-self: center;
+        }
+`;
+
 
 export const Container = styled.div`
     display: flex;

@@ -38,7 +38,7 @@ const StartPage = () => {
                 .then((response) => {
                     if (response.data.sessionNumber) {
                         sessionStorage.setItem("sessionId", sessionId);
-                        sessionStorage.setItem("namePlyer", name);
+                        sessionStorage.setItem("namePlayer", name);
                         navigate(`/game`);
                     } else {
                         toast("Partida não encontrada");
