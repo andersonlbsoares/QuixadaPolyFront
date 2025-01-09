@@ -11,6 +11,7 @@ import {
     ButtonGroup,
     CustomToastContainer,
     Background,
+    InputColor
 } from "./styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,6 +20,8 @@ const StartPage = () => {
     const urlBack = process.env.REACT_APP_BACK_URL;
     const [sessionId, setSessionId] = useState("");
     const [name, setName] = useState("");
+    // cor aleatória
+    const [color, setColor] = useState("#" + Math.floor(Math.random() * 16777215).toString(16));
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -33,7 +36,7 @@ const StartPage = () => {
             axios
                 .post(`${urlBack}/sessao/${sessionId}/jogador`, {
                     name: name,
-                    color: "red",
+                    color: color
                 })
                 .then((response) => {
                     if (response.data.sessionNumber) {
@@ -53,10 +56,33 @@ const StartPage = () => {
         }
     };
 
-    const handleCreateGame = () => {
+    const handleCreateGame = async () => {
         if (name) {
-            alert("Create Game");
+            const novaSessao = await axios.post(`${urlBack}/sessao`);
+            let sessionNumber = novaSessao.data.sessionNumber;
+
+            axios
+                .post(`${urlBack}/sessao/${sessionNumber}/jogador`, {
+                    name: name,
+                    color: color
+                })
+                .then((response) => {
+                    if (response.data.sessionNumber) {
+                        sessionStorage.setItem("sessionId", sessionNumber);
+                        sessionStorage.setItem("namePlayer", name);
+                        navigate(`/game`);
+                    } else {
+                        toast("Partida não encontrada");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    toast(error.response.data.message);
+                });
+        } else {
+            toast("Para criar uma partida insira o seu nome");
         }
+
     };
 
     return (
@@ -68,11 +94,15 @@ const StartPage = () => {
                 </Title>
                 <Slogan>Faça o seu monopólio em Quixadá</Slogan>
                 <Input placeholder="Digite seu nome" id="name" onChange={handleNameChange} />
+                {/* INPUT DO TIPO COR */}
+                <InputColor type="color" id="color" onChange={(e) => setColor(e.target.value)} value={color} />
+
                 <Input
                     placeholder="Digite o ID da partida"
                     id="sessionId"
                     onChange={handleSessionIdChange}
                 />
+
                 <ButtonGroup>
                     <Button onClick={handleJoinGame}>Entrar na Partida</Button>
                     <Button onClick={handleCreateGame}>Criar Partida</Button>

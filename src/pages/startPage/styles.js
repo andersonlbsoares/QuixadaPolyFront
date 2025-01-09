@@ -10,6 +10,20 @@ const slideAnimation = keyframes`
   }
 `;
 
+
+export const InputColor = styled.input`
+    padding: 0;
+    margin: 0;
+    margin-bottom: 20px;
+    border: none;
+    width: 300px;
+    border-radius: 100px;
+    height: 40px;
+    background-color: ${(props) => props.value || "#2d2d2d"};
+    `
+;
+
+
 export const Container = styled.div`
     background-color: #121212;
     color: #fff;
@@ -22,7 +36,6 @@ export const Container = styled.div`
     opacity: 0.9;
 `;
 
-// Título principal
 export const Title = styled.h1`
     font-size: 3.5rem;
     margin-bottom: 10px;

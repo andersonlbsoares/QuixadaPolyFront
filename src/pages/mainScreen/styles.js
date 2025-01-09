@@ -1,5 +1,47 @@
 import styled from "styled-components";
 
+export const House = styled.div`
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+// Estrela branca
+export const Hotel = styled.div`
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border: 1px solid black;
+    clip-path: polygon(
+        50% 0%, 
+        61% 35%, 
+        98% 35%, 
+        68% 57%, 
+        79% 91%, 
+        50% 70%, 
+        21% 91%, 
+        32% 57%, 
+        2% 35%, 
+        39% 35%
+    );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const DivPlayer = styled.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: ${(props) => props.color};
+    display: flex;
+    flex-direction: row;
+    `;
+
 export const Button = styled.button`
     background-color: #4caf50;
     border: none;

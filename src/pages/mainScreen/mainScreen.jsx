@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Container, Column, PlayerList, BoardContainer, CenterBox, Tile, Historico, Button } from "./styles";
+import { Container, Column, PlayerList, BoardContainer, CenterBox, Tile, Historico, Button, DivPlayer, Row, House, Hotel} from "./styles";
 import Dice from "./Components/Dice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -17,12 +17,43 @@ const MainScreen = () => {
     const [currentPlayerName, setCurrentPlayerName] = useState("");
     const [gameIsRunning, setGameIsRunning] = useState(false);
     const [update, setUpdate] = useState(false);
+    const [checarAcao, setChecarAcao] = useState(false);
     const [diceValue1, setValeuDice1] = useState(1);
     const [diceValue2, setValeuDice2] = useState(1);
+    const [showModal, setShowModal] = useState(false);
+    const [contentModal, setContentModal] = useState("");
+    const [nameButtons, setNameButtons] = useState(["", ""]);
+    const [routesActions, setRoutesActions] = useState(["", ""]);
+    const [playerStatus, setPlayerStatus] = useState("Não é sua vez.");
 
     let namePlayer = sessionStorage.getItem("namePlayer");
     let sessionId = sessionStorage.getItem("sessionId");
 
+    const atualizaJogo = async () => {
+        try {
+            const response = await axios.get(`${urlBack}/sessao/${sessionId}`);
+            setPlayers(response.data.players);
+            setTiles(response.data.board.tiles);
+            setHistory(response.data.anotacoes);
+
+            setGameIsRunning(response.data.isGameRunning);
+            if(response.data.isGameRunning){
+                setCurrentPlayer(response.data.currentPlayerIndex);
+                setCurrentPlayerName(response.data.players[response.data.currentPlayerIndex].name);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar participantes:", error);
+        }
+    };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            console.log(players)
+            atualizaJogo();
+            checaSePrecisaAcao();
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [currentPlayerName]);
 
 
     useEffect(() => {
@@ -32,29 +63,19 @@ const MainScreen = () => {
     }, [namePlayer, sessionId, navigate]);
 
     useEffect(() => {
-        const fetchStatusGame = async () => {
-            try {
-                const response = await axios.get(`${urlBack}/sessao/${sessionId}`);
-                setPlayers(response.data.players);
-                setTiles(response.data.board.tiles);
-                setHistory(response.data.anotacoes);
-                
-                setCurrentPlayer(response.data.currentPlayerIndex);
-                setCurrentPlayerName(response.data.players[response.data.currentPlayerIndex].name);
-                setGameIsRunning(response.data.isGameRunning);
-                console.log(currentPlayer);
-                console.log(currentPlayerName);
-                console.log(gameIsRunning);
-
-            } catch (error) {
-                console.error("Erro ao buscar participantes:", error);
-            }
-        };
-        fetchStatusGame();
+        atualizaJogo();
     }, [sessionId, urlBack, update]);
+    
+    useEffect(() => {
+        checaSePrecisaAcao();
+    }, [currentPlayerName, checarAcao]);
 
+
+    
     const TileMap = () => {
-        return tiles.map((tile) => {
+        return tiles.map((tile, index) => {
+            const playersHere = players.filter((player) => player.position === index);
+
             let position =
                 tile.row === 11
                     ? "bottom"
@@ -77,22 +98,32 @@ const MainScreen = () => {
                     position={position}
                 >
                     <div className="tile-name">{tile.name}</div>
+                    {playersHere && (
+                        <div className="player-container">
+                            <Row>
+                                {playersHere.map((player, index) => (
+                                    <DivPlayer key={index} color={player.color} />
+                                ))}
+                            </Row>
+                        </div>
+                    )}
+                    
 
                     {tile.rent && (
                         <>
-                            <div className="house-container">
-                                {tile.hotel ? (
-                                    <div className="hotel" />
-                                ) : (
-                                    Array.from({ length: tile.houses }).map((_, i) => (
-                                        <div key={i} className="house" />
-                                    ))
-                                )}
-                            </div>
                             <div className="tile-info">
                                 <span>Aluguel: ${tile.rent}</span>
                                 <br />
                                 <span>Preço: ${tile.price}</span>
+                            </div>
+                            <div className="house-container">
+                                {tile.hotel ? (
+                                    <Hotel />
+                                ) : (
+                                    Array.from({ length: tile.houses }).map((_, i) => (
+                                        <House />
+                                    ))
+                                )}
                             </div>
                         </>
                     )}
@@ -104,21 +135,43 @@ const MainScreen = () => {
     const handleStartGame = async () => {
         try {
             let diceValues = await axios.post(`${urlBack}/sessao/${sessionId}/comecar`);
-            console.log(diceValues)
             diceValues = diceValues.data.diceRolls;
             diceValues.forEach((player) => {
                 if(player.player.name === namePlayer) {
                     setValeuDice1(parseInt(player.dice1));
                     setValeuDice2(parseInt(player.dice2));
-                    console.log("dado 1", diceValue1);
-                    console.log("dado 2", diceValue1);
                 }
             }
             );
-
             setUpdate(!update);
         } catch (error) {
             console.error("Erro ao iniciar o jogo:", error);
+        }
+    }
+
+    const checaSePrecisaAcao = async () => {
+        try {
+            let conteudo = await axios.get(`${urlBack}/sessao/${sessionId}/checaopcoes`, { params: {playerName: namePlayer}});
+            if (conteudo.data.message == "Não é sua vez."){
+                setPlayerStatus("Não é sua vez.");
+                setShowModal(false);
+            }else if (conteudo.data.message == "Sua vez, role os dados."){
+                setPlayerStatus("Sua vez, role os dados.");
+                setShowModal(false);
+            }else{
+                setContentModal(conteudo.data.message);
+                setNameButtons([conteudo.data.button1, conteudo.data.button2]);
+                setRoutesActions([conteudo.data.route1, conteudo.data.route2]);
+                setShowModal(true);
+            }
+        } catch (error) {
+
+            if (error.status === 401) {
+                sessionStorage.removeItem("namePlayer");
+                sessionStorage.removeItem("sessionId");
+                navigate("/");
+            }
+            console.error(error);
         }
     }
 
@@ -131,6 +184,7 @@ const MainScreen = () => {
             setValeuDice2(parseInt(diceValues.dice2));
 
             setUpdate(!update);
+            setChecarAcao(!checarAcao);
         } catch (error) {
             console.error("Erro ao iniciar o jogo:", error);
         }
@@ -138,9 +192,9 @@ const MainScreen = () => {
 
     const handleConfirm = async () => {
         try {
-            alert("confirmado");
-            // await axios.post(`${urlBack}/sessao/${sessionId}/confirmar`);
+            await axios.get(`${urlBack}/sessao/${sessionId}/${routesActions[0]}`, { params: {playerName: namePlayer}} );
             setUpdate(!update);
+            setShowModal(false);
         } catch (error) {
             console.error("Erro ao confirmar:", error);
         }
@@ -148,11 +202,22 @@ const MainScreen = () => {
 
     const handleCancel = async () => {
         try {
-            alert("cancelado");
-            // await axios.post(`${urlBack}/sessao/${sessionId}/cancelar`);
+            await axios.get(`${urlBack}/sessao/${sessionId}/${routesActions[1]}`, { params: {playerName: namePlayer}} );
             setUpdate(!update);
+            setShowModal(false);
         } catch (error) {
             console.error("Erro ao cancelar:", error);
+        }
+    }
+
+    const handleDeleteSession = async () => {
+        try {
+            await axios.delete(`${urlBack}/sessao/${sessionId}`, { params: {playerName: namePlayer}});
+            sessionStorage.removeItem("namePlayer");
+            sessionStorage.removeItem("sessionId");
+            navigate("/");
+        } catch (error) {
+            console.error("Erro ao deletar sessão:", error);
         }
     }
 
@@ -160,9 +225,12 @@ const MainScreen = () => {
         <Container>
             <ChoiceModal 
                 title="Confirmação" 
-                message="Tem certeza que deseja continuar?" 
+                message={contentModal}
                 onConfirm={handleConfirm} 
                 onCancel={handleCancel} 
+                button1={nameButtons[0]}
+                button2={nameButtons[1]}
+                show={showModal}
             />
             <Column width="25%">
                 <h3>Participantes</h3>
@@ -171,9 +239,9 @@ const MainScreen = () => {
                         <li key={index}>
                             {currentPlayer !== index && <strong>⏳</strong>}
                             {currentPlayer === index && <strong>🎲</strong>}
-                            {player.name === namePlayer && <strong>{player.name}  (Você)</strong>}
-                            {player.name !== namePlayer && <strong>{player.name}</strong>}
-                            <div>Saldo: {player.balance}</div>
+                                {player.name === namePlayer && <strong> {player.name}  (Você)</strong>}
+                                {player.name !== namePlayer && <strong>{player.name}</strong>}
+                            <div style={{ color: player.color }}>Saldo: {player.balance}</div>
                         </li>
                     ))}
                 </PlayerList>
@@ -187,22 +255,20 @@ const MainScreen = () => {
                             {currentPlayerName != namePlayer && <h3>Vez do jogador {currentPlayerName}</h3>}
                             <Dice faceValue={diceValue1} />
                             {!gameIsRunning && <Button onClick={handleStartGame}>Começar o jogo</Button>}
-                            {currentPlayerName == namePlayer && gameIsRunning && <Button onClick={handleThrowDice}>Lançar os dados</Button>}
+                            {playerStatus == "Sua vez, role os dados." && <Button onClick={handleThrowDice}>Lançar os dados</Button>}
                             <Dice faceValue={diceValue2} />
                         </div>
                     </CenterBox>
                 </BoardContainer>
             </Column>
             <Column width="25%">
+                <Button onClick={handleDeleteSession}>Encerrar Sessão</Button>
             <Historico>
                 <h3>Historico</h3>
-                {/* Imprime invertido do ultimo para o primeiro */}
-
                     {history.length === 0 && <p>Nenhum movimento registrado</p>}
-
                     {history.slice().reverse().map((item, index) => (
-    <p key={index}>{item}</p>
-))}
+                        <p key={index}>{item}</p>
+                    ))}
             </Historico>
             </Column>
         </Container>

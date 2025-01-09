@@ -13,6 +13,7 @@ const ModalBackground = styled.div`
   align-items: center;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.6);
+  display: ${props => props.show ? 'flex' : 'none'};
 `;
 
 const ModalContainer = styled.div`
@@ -65,18 +66,18 @@ const Button = styled.button`
   }
 `;
 
-const ChoiceModal = ({ title, message, onConfirm, onCancel, show }) => {
+const ChoiceModal = ({ title, message, onConfirm, onCancel, show, button1, button2 }) => {
   return (
 
-		<ModalBackground>
-		<ModalContainer>
-        <ModalTitle>{title}</ModalTitle>
-        <ModalMessage>{message}</ModalMessage>
-        <ButtonContainer>
-		<Button className="cancel" onClick={onCancel}>Cancelar</Button>
-		<Button className="confirm" onClick={onConfirm}>Confirmar</Button>
-        </ButtonContainer>
-		</ModalContainer>
+		<ModalBackground show={show}>
+      <ModalContainer>
+          <ModalTitle>{title}</ModalTitle>
+          <ModalMessage>{message}</ModalMessage>
+          <ButtonContainer>
+            {button2 !== "" && <Button className="cancel" onClick={onCancel}>{button2}</Button>}
+            {button1 !== "" && <Button className="confirm" onClick={onConfirm}>{button1}</Button>}
+          </ButtonContainer>
+      </ModalContainer>
 		</ModalBackground>
 	);
 };
