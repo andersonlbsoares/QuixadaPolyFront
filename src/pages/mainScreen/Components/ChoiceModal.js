@@ -67,6 +67,7 @@ const Button = styled.button`
 `;
 
 const ChoiceModal = ({ title, message, onConfirm, onCancel, onSell, show, button1, button2, sellProperties}) => {
+  console.log("button",button2)
   if(sellProperties.length > 0){
     return(
       <ModalBackground show={show}>
@@ -87,8 +88,8 @@ const ChoiceModal = ({ title, message, onConfirm, onCancel, onSell, show, button
             <ModalTitle>{title}</ModalTitle>
             <ModalMessage>{message}</ModalMessage>
             <ButtonContainer>
-              {button2 !== "" && <Button className="cancel" onClick={onCancel}>{button2}</Button>}
-              {button1 !== "" && <Button className="confirm" onClick={onConfirm}>{button1}</Button>}
+              {(button2 !== "" && button2 !== null) && <Button className="cancel" onClick={onCancel}>{button2}</Button>}
+              {(button1 !== "" && button1 !== null) && <Button className="confirm" onClick={onConfirm}>{button1}</Button>}
             </ButtonContainer>
         </ModalContainer>
       </ModalBackground>

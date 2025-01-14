@@ -115,9 +115,9 @@ const MainScreen = () => {
                     {tile.rent && (
                         <>
                             <div className="tile-info">
-                                <span>Aluguel: ${tile.rent}</span>
+                                <span>Aluguel: ${tile.rent.toFixed(2)}</span>
                                 <br />
-                                <span>Preço: ${tile.price}</span>
+                                <span>Preço: ${tile.price.toFixed(2)}</span>
                             </div>
                             <div className="house-container">
                                 {tile.hotel ? (
@@ -275,7 +275,7 @@ const MainScreen = () => {
                             {currentPlayer === index && <strong>🎲</strong>}
                                 {player.name === namePlayer && <strong> {player.name}  (Você)</strong>}
                                 {player.name !== namePlayer && <strong>{player.name}</strong>}
-                            <div style={{ color: player.color }}>Saldo: {player.balance}</div>
+                            <div style={{ color: player.color }}>Saldo: {player.balance.toFixed(2)}</div>
                         </li>
                     ))}
                 </PlayerList>

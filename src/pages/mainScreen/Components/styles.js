@@ -5,12 +5,14 @@ export const DiceContainer = styled.div`
   width: 100px;
   height: 100px;
   transform-style: preserve-3d;
-  transform: ${({ rotation }) => `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`};
+ transform: ${({ rotation }) => `rotateX(${rotation?.x || 0}deg) rotateY(${rotation?.y || 0}deg)`};
   transition: transform 0.5s ease;
   cursor: pointer;
 
 `;
-
+DiceContainer.defaultProps = {
+  rotation: { x: 0, y: 0 },
+};
 export const Face = styled.div`
   position: absolute;
   width: 100px;
