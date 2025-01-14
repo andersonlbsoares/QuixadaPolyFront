@@ -67,7 +67,7 @@ const Button = styled.button`
 `;
 
 const ChoiceModal = ({ title, message, onConfirm, onCancel, onSell, show, button1, button2, sellProperties}) => {
-  if(sellProperties){
+  if(sellProperties.length > 0){
     return(
       <ModalBackground show={show}>
         <ModalContainer>

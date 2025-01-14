@@ -163,6 +163,7 @@ const MainScreen = () => {
                 setShowModal(false);
             }else if (conteudo.data.message.startsWith("O vencedor")){
                 setWinner(conteudo.data.button1);
+                setShowModal(false);
                 setShowWinner(true);
             }
             else{
@@ -237,12 +238,13 @@ const MainScreen = () => {
         try {
             await axios.get(`${urlBack}/sessao/${sessionId}/vender/${property.name}`, { params: {playerName: namePlayer}} );
             setUpdate(!update);
+            setSellProperties([])
             setShowModal(false);
         } catch (error) {
             console.error("Erro ao vender:", error);
         }
     }
-    
+
     return (
         <Container>
             <WinnerShow
@@ -261,7 +263,7 @@ const MainScreen = () => {
                 onSell={handleSell}
                 button1={nameButtons[0]}
                 button2={nameButtons[1]}
-                properties={sellProperties}
+                sellProperties={sellProperties}
                 show={showModal}
             />
             <Column width="25%">
