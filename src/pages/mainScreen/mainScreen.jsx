@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Container, Column, PlayerList, BoardContainer, CenterBox, Tile, Historico, Button, DivPlayer, Row, House, Hotel} from "./styles";
+import { Container, Column, PlayerList, BoardContainer, CenterBox, Tile, Historico, Button, DivPlayer, Row, House, Hotel, WinnerShow} from "./styles";
 import Dice from "./Components/Dice";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,9 @@ const MainScreen = () => {
     const [nameButtons, setNameButtons] = useState(["", ""]);
     const [routesActions, setRoutesActions] = useState(["", ""]);
     const [playerStatus, setPlayerStatus] = useState("Não é sua vez.");
+    const [showWinner, setShowWinner] = useState(false);
+    const [winner, setWinner] = useState("");
+    const [sellProperties, setSellProperties] = useState([]);
 
     let namePlayer = sessionStorage.getItem("namePlayer");
     let sessionId = sessionStorage.getItem("sessionId");
@@ -158,7 +161,16 @@ const MainScreen = () => {
             }else if (conteudo.data.message == "Sua vez, role os dados."){
                 setPlayerStatus("Sua vez, role os dados.");
                 setShowModal(false);
-            }else{
+            }else if (conteudo.data.message.startsWith("O vencedor")){
+                setWinner(conteudo.data.button1);
+                setShowWinner(true);
+            }
+            else{
+                if(conteudo.data.properties){
+                    setSellProperties(conteudo.data.properties);
+                }else{
+                    setSellProperties([]);
+                }
                 setContentModal(conteudo.data.message);
                 setNameButtons([conteudo.data.button1, conteudo.data.button2]);
                 setRoutesActions([conteudo.data.route1, conteudo.data.route2]);
@@ -221,15 +233,35 @@ const MainScreen = () => {
         }
     }
 
+    const handleSell = async (property) => {
+        try {
+            await axios.get(`${urlBack}/sessao/${sessionId}/vender/${property.name}`, { params: {playerName: namePlayer}} );
+            setUpdate(!update);
+            setShowModal(false);
+        } catch (error) {
+            console.error("Erro ao vender:", error);
+        }
+    }
+    
     return (
         <Container>
+            <WinnerShow
+                show={showWinner}
+            >
+                <p>O Vencedor é</p>
+                <p>{winner}</p>
+                <Button onClick={handleDeleteSession}>Encerrar Sessão</Button>
+
+            </WinnerShow>
             <ChoiceModal 
                 title="Confirmação" 
                 message={contentModal}
                 onConfirm={handleConfirm} 
-                onCancel={handleCancel} 
+                onCancel={handleCancel}
+                onSell={handleSell}
                 button1={nameButtons[0]}
                 button2={nameButtons[1]}
+                properties={sellProperties}
                 show={showModal}
             />
             <Column width="25%">

@@ -66,20 +66,34 @@ const Button = styled.button`
   }
 `;
 
-const ChoiceModal = ({ title, message, onConfirm, onCancel, show, button1, button2 }) => {
-  return (
-
-		<ModalBackground show={show}>
-      <ModalContainer>
-          <ModalTitle>{title}</ModalTitle>
-          <ModalMessage>{message}</ModalMessage>
-          <ButtonContainer>
-            {button2 !== "" && <Button className="cancel" onClick={onCancel}>{button2}</Button>}
-            {button1 !== "" && <Button className="confirm" onClick={onConfirm}>{button1}</Button>}
-          </ButtonContainer>
-      </ModalContainer>
-		</ModalBackground>
-	);
+const ChoiceModal = ({ title, message, onConfirm, onCancel, onSell, show, button1, button2, sellProperties}) => {
+  if(sellProperties){
+    return(
+      <ModalBackground show={show}>
+        <ModalContainer>
+            <ModalMessage>{message}</ModalMessage>
+            <ButtonContainer>
+              {sellProperties.map((property, index) => (
+                <Button key={index} className="cancel" onClick={() => onSell(property)}>{property.name} - {property.price}</Button>
+              ))}
+            </ButtonContainer>
+        </ModalContainer>
+      </ModalBackground>
+    )
+  }else{
+    return (
+      <ModalBackground show={show}>
+        <ModalContainer>
+            <ModalTitle>{title}</ModalTitle>
+            <ModalMessage>{message}</ModalMessage>
+            <ButtonContainer>
+              {button2 !== "" && <Button className="cancel" onClick={onCancel}>{button2}</Button>}
+              {button1 !== "" && <Button className="confirm" onClick={onConfirm}>{button1}</Button>}
+            </ButtonContainer>
+        </ModalContainer>
+      </ModalBackground>
+	  );
+  }
 };
 
 export default ChoiceModal;

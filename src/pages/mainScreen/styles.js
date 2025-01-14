@@ -1,5 +1,25 @@
 import styled from "styled-components";
 
+export const WinnerShow = styled.div`
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%;
+    background-color: rgba(163, 102, 255, 0.9);
+    z-index: 1000;
+    display: ${(props) => (props.show ? "flex" : "none")};
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 2.5rem;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+`;
+
 export const House = styled.div`
     width: 10px;
     height: 10px;
@@ -10,7 +30,6 @@ export const House = styled.div`
     align-items: center;
 `;
 
-// Estrela branca
 export const Hotel = styled.div`
     width: 20px;
     height: 20px;
@@ -40,7 +59,7 @@ export const DivPlayer = styled.div`
     background-color: ${(props) => props.color};
     display: flex;
     flex-direction: row;
-    `;
+`;
 
 export const Button = styled.button`
     background-color: #4caf50;
@@ -108,7 +127,6 @@ export const Historico = styled.div`
         align-self: center;
         }
 `;
-
 
 export const Container = styled.div`
     display: flex;
