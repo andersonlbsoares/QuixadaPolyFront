@@ -28,6 +28,7 @@ export const House = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    clip-path: polygon(11% 36%, 0 36%, 52% 0, 100% 36%, 88% 36%, 88% 100%, 10% 100%);
 `;
 
 export const Hotel = styled.div`
